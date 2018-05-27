@@ -12,8 +12,8 @@ blue = (86, 66, 244)
 camera_plus = 0
 camera_move = 0
 
-border_list_left = [(400, 550 + camera_move)]
-border_list_right = [(550, 550 + camera_move)]
+border_list_left = [(0, 0 + camera_move), (370, 550 + camera_move)]
+border_list_right = [(1000, 0 + camera_move), (580, 550 + camera_move)]
 previous_y = 550
 previous_x = 450
 
@@ -24,23 +24,43 @@ class Car:
     def __init__(self):
         self.x = 500
         self.y = 200
-        self.size = random.randint(5, 20)
+        self.size = random.randint(5, 30)
+        self.speed = random.randint(1, 20)
+        self.turn_range = random.randint(1, 100)
         self.terminate = 0
         self.body = pygame.draw.circle(master, blue, (self.x, self.y), self.size, 0)
+        self.score = 0
         
     def move(self):
         global all_points_left, all_points_right
-        if (self.terminate == 0):
-            self.body = pygame.draw.circle(master, blue, (self.x, self.y), self.size, 0)
-                
+                                
         for point in range (0, len(all_points_left)):
-            if (self.y == int(round(all_points_left[point][1], 0))):
-                if (self.x - self.size <= all_points_left[point][0]):
+            if (abs(self.y - int(round(all_points_left[point][1], 0))) <= self.size):
+                if (self.x - self.size <= int(round(all_points_left[point][0], 0))):
+                    self.terminate = 1
+            if (abs((self.y + self.size)- int(round(all_points_left[point][1], 0))) <= self.size):
+                if (self.x <= int(round(all_points_left[point][0], 0))):
                     self.terminate = 1
         for point in range (0, len(all_points_right)):
-            if (self.y == int(round(all_points_right[point][1], 0))):
-                if (self.x + self.size >= all_points_right[point][0]):
+            if (abs(self.y - int(round(all_points_right[point][1], 0))) <= self.size):
+                if (self.x + self.size >= int(round(all_points_right[point][0], 0))):
                     self.terminate = 1
+            if (abs((self.y + self.size) - int(round(all_points_right[point][1], 0))) <= self.size):
+                if (self.x >= int(round(all_points_right[point][0], 0))):
+                    self.terminate = 1
+                    
+        for point in range (0, len(all_points_left)):
+            if (self.y == int(round(all_points_left[point][1], 0))):
+                if (abs((self.x - self.size) - all_points_left[point][0]) <= self.turn_range):
+                    self.x = self.x + self.speed
+        for point in range (0, len(all_points_right)):
+            if (self.y == int(round(all_points_right[point][1], 0))):
+                if (abs((self.x + self.size) - all_points_right[point][0]) <= self.turn_range):
+                    self.x = self.x - self.speed
+                    
+        if (self.terminate == 0):
+            self.body = pygame.draw.circle(master, blue, (self.x, self.y), self.size, 0)
+            self.score = self.score + 1
                     
 def build_map():
     global border_list_left, border_list_right, previous_y, previous_x, camera_move, all_points_left, all_points_right
@@ -48,7 +68,7 @@ def build_map():
     move_y = 1
     previous_y = previous_y + move_y
     up = previous_y + move_y
-    left = previous_x + random.randint(-20, 20)
+    left = previous_x + random.randint(-15, 15)
     if (left + 150 >= 1000):
         left = 850
     if (left <= 0):
