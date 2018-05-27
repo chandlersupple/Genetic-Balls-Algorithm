@@ -3,6 +3,7 @@ import random
 from pygame.locals import *
 
 master = pygame.display.set_mode((1000, 500))
+pygame.display.set_caption('Genetic Cars :)')
 clock = pygame.time.Clock()
 
 white = (255, 255, 255)
@@ -19,7 +20,7 @@ all_points_left = []
 all_points_right = []
 scores = []
 terminated = 0
-population = 200
+population = 150
 border_once = 0
 add_left = 300
 speed_mate = []
@@ -30,9 +31,10 @@ size_max = 25
 size_min = 3
 speed_max = 60
 speed_min = 1
-turn_range_max = 250
+turn_range_max = 300
 turn_range_min = 1
-vieux = 0
+older = 0
+terminated_add = 0
 
 class Car:
     def __init__(self):
@@ -80,7 +82,7 @@ class Car:
             scores.append(self.score)
             terminated = terminated + 1
             self.once = 1
-            if (population - terminated <= 20):
+            if (population - terminated <= 25):
                 size_mate.append(self.size)
                 speed_mate.append(self.speed)
                 turn_range_mate.append(self.turn_range)
@@ -131,7 +133,7 @@ class Car_Babies:
             scores.append(self.score)
             terminated = terminated + 1
             self.once = 1
-            if (population - terminated <= 50):
+            if (population - terminated <= 15):
                 size_mate.append(self.size)
                 speed_mate.append(self.speed)
                 turn_range_mate.append(self.turn_range)
@@ -142,7 +144,7 @@ def build_map():
     move_y = 1
     previous_y = previous_y + move_y
     up = previous_y + move_y
-    left = previous_x + random.randint(-25, 25)
+    left = previous_x + random.randint(-10, 10)
     if (left + 150 >= 1000):
         left = 850
     if (left <= 0):
@@ -179,20 +181,20 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
                 
-    if (camera_plus >= 2):
+    if (camera_plus >= 1):
         camera_move = camera_move - 0.1
         master.fill(black)
         build_map()    
-        if (vieux == 0):
+        if (older == 0):
             for car in range (0, population):
                 (cars_dict[('car%s') %(car)]).move()
-        if (vieux == 1):
+        if (older == 1):
             for car in range (0, population):
                 cars_dict_babies[('car%s') %(car)].move()
         camera_plus = 0
-    if (camera_plus < 4):
+    if (camera_plus < 1):
         camera_plus = camera_plus + 1
-        
+            
     if (terminated == population):
         print(scores)
         camera_plus = 0
@@ -205,18 +207,20 @@ while True:
         all_points_right = []
         scores = []
         terminated = 0
-        population = 200
+        population = 150
         border_once = 0
         add_left = 300
         cars_dict = {}
         cars_dict_babies = {}
-        vieux = 1
+        older = 1
+        size_mate.append(random.randint(3, 25))
+        speed_mate.append(random.randint(1, 60))
+        turn_range_mate.append(random.randint(1, 300))
         for car in range (0, population):
             cars_dict_babies[('car%s') %(car)] = Car_Babies(size_mate[random.randint(0, len(size_mate) - 1)], speed_mate[random.randint(0, len(speed_mate) - 1)], turn_range_mate[random.randint(0, len(turn_range_mate) - 1)])
-        car_dict_babies[('car%s') %(population + 1)]
         size_mate = []
         speed_mate = []
         turn_range_mate = []
         
     pygame.display.flip()
-    clock.tick(20)
+    clock.tick(30)
