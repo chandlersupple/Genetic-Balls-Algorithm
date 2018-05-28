@@ -10,7 +10,6 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 blue = (86, 66, 244)
 
-camera_plus = 0
 camera_move = 0
 border_list_left = [(0, 500 + camera_move), (350, 500 + camera_move)]
 border_list_right = [(1000, 500 + camera_move), (650, 500 + camera_move)]
@@ -20,9 +19,9 @@ all_points_left = []
 all_points_right = []
 scores = []
 terminated = 0
-population = 150
+population = 100
 border_once = 0
-add_left = 300
+add_left = 250
 speed_mate = []
 turn_range_mate = []
 size_mate = []
@@ -48,7 +47,6 @@ class Car:
         self.once = 0
         self.body = pygame.draw.circle(master, blue, (self.x, self.y), self.size, 0)
         self.score = 0
-        
     def move(self):
         global all_points_left, all_points_right, scores, terminated, size_mate, speed_mate, turn_range_mate
                                 
@@ -56,7 +54,7 @@ class Car:
             if (abs(self.y - int(round(all_points_left[point][1], 0))) <= self.size):
                 if (self.x - self.size <= int(round(all_points_left[point][0], 0))):
                     self.terminate = 1
-            if (abs((self.y + self.size)- int(round(all_points_left[point][1], 0))) <= self.size):
+            if (abs((self.y + self.size) - int(round(all_points_left[point][1], 0))) <= self.size):
                 if (self.x <= int(round(all_points_left[point][0], 0))):
                     self.terminate = 1
         for point in range (0, len(all_points_right)):
@@ -66,7 +64,6 @@ class Car:
             if (abs((self.y + self.size) - int(round(all_points_right[point][1], 0))) <= self.size):
                 if (self.x >= int(round(all_points_right[point][0], 0))):
                     self.terminate = 1
-                    
         for point in range (0, len(all_points_left)):
             if (self.y == int(round(all_points_left[point][1], 0))):
                 if (abs((self.x - self.size) - all_points_left[point][0]) <= self.turn_range):
@@ -75,7 +72,6 @@ class Car:
             if (self.y == int(round(all_points_right[point][1], 0))):
                 if (abs((self.x + self.size) - all_points_right[point][0]) <= self.turn_range):
                     self.x = self.x - self.speed
-                    
         if (self.terminate == 0):
             self.body = pygame.draw.circle(master, blue, (self.x, self.y), self.size, 0)
             self.score = self.score + 1
@@ -99,10 +95,8 @@ class Car_Babies:
         self.once = 0
         self.body = pygame.draw.circle(master, blue, (self.x, self.y), self.size, 0)
         self.score = 0
-        
     def move(self):
         global all_points_left, all_points_right, scores, terminated, size_mate, speed_mate, turn_range_mate
-                                
         for point in range (0, len(all_points_left)):
             if (abs(self.y - int(round(all_points_left[point][1], 0))) <= self.size):
                 if (self.x - self.size <= int(round(all_points_left[point][0], 0))):
@@ -117,7 +111,6 @@ class Car_Babies:
             if (abs((self.y + self.size) - int(round(all_points_right[point][1], 0))) <= self.size):
                 if (self.x >= int(round(all_points_right[point][0], 0))):
                     self.terminate = 1
-                    
         for point in range (0, len(all_points_left)):
             if (self.y == int(round(all_points_left[point][1], 0))):
                 if (abs((self.x - self.size) - all_points_left[point][0]) <= self.turn_range):
@@ -126,7 +119,6 @@ class Car_Babies:
             if (self.y == int(round(all_points_right[point][1], 0))):
                 if (abs((self.x + self.size) - all_points_right[point][0]) <= self.turn_range):
                     self.x = self.x - self.speed
-                    
         if (self.terminate == 0):
             self.body = pygame.draw.circle(master, blue, (self.x, self.y), self.size, 0)
             self.score = self.score + 1
@@ -141,12 +133,11 @@ class Car_Babies:
                     
 def build_map():
     global border_list_left, border_list_right, previous_y, previous_x, camera_move, all_points_left, all_points_right, border_once, add_left, difficulty
-    
-    move_y = 0.1
+    move_y = 0.01
     previous_y = previous_y + move_y
     up = previous_y + move_y
     if (difficulty >= 100):
-        left = previous_x + random.randint(-20, 20)
+        left = previous_x + random.randint(-15, 15)
     if (difficulty < 100):
         difficulty = difficulty + 1
         left = previous_x + random.randint(-5, 5)
@@ -155,16 +146,14 @@ def build_map():
     if (left <= 0):
         left = 0
     previous_x = left
-    
     border_list_left.append((left, up))
-    if (border_once <= 35):
+    if (border_once <= 100):
         border_list_right.append((left + add_left, up))
         border_once = border_once + 1
-        add_left = add_left - 3
-    border_list_right.append((left + 150, up))
+        add_left = add_left - 1
+    border_list_right.append((left + 125, up))
     border_list_left_change = []
     border_list_right_change = []
-        
     for update_cord in range(0, (len(border_list_left))):
         border_list_left_change.append((border_list_left[update_cord][0], border_list_left[update_cord][1] + camera_move))
         border_list_right_change.append((border_list_right[update_cord][0], border_list_right[update_cord][1] + camera_move))
@@ -178,7 +167,6 @@ def build_map():
         border_list_right = border_list_right[1:(len(border_list_right))]
     all_points_left = border_list_left
     all_points_right = border_list_right
-
     pygame.draw.lines(master, white, False, border_list_left, 3)
     pygame.draw.lines(master, white, False, border_list_right, 3)
     
@@ -189,24 +177,17 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-                
-    if (camera_plus >= 1):
-        camera_move = camera_move - 0.1
-        master.fill(black)
-        build_map()    
-        if (older == 0):
-            for car in range (0, population):
-                (cars_dict[('car%s') %(car)]).move()
-        if (older == 1):
-            for car in range (0, population):
-                cars_dict_babies[('car%s') %(car)].move()
-        camera_plus = 0
-    if (camera_plus < 1):
-        camera_plus = camera_plus + 1
-            
+    camera_move = camera_move - 0.01
+    master.fill(black)
+    build_map()    
+    if (older == 0):
+        for car in range (0, population):
+            (cars_dict[('car%s') %(car)]).move()
+    if (older == 1):
+        for car in range (0, population):
+            cars_dict_babies[('car%s') %(car)].move()
     if (terminated == population):
         print(scores)
-        camera_plus = 0
         camera_move = 0
         border_list_left = [(0, 500 + camera_move), (350, 500 + camera_move)]
         border_list_right = [(1000, 500 + camera_move), (650, 500 + camera_move)]
@@ -216,12 +197,17 @@ while True:
         all_points_right = []
         scores = []
         terminated = 0
-        population = 150
+        population = 100
         border_once = 0
-        add_left = 300
-        cars_dict = {}
-        cars_dict_babies = {}
+        add_left = 250
+        size_max = 25
+        size_min = 3
+        speed_max = 60
+        speed_min = 1
+        turn_range_max = 300
+        turn_range_min = 1
         older = 1
+        terminated_add = 0
         difficulty = 0
         size_mate.append(random.randint(3, 25))
         speed_mate.append(random.randint(1, 60))
@@ -233,4 +219,4 @@ while True:
         turn_range_mate = []
         
     pygame.display.flip()
-    clock.tick(40)
+    clock.tick(60)
