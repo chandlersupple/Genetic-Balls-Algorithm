@@ -35,6 +35,7 @@ turn_range_max = 300
 turn_range_min = 1
 older = 0
 terminated_add = 0
+difficulty = 0
 
 class Car:
     def __init__(self):
@@ -139,12 +140,16 @@ class Car_Babies:
                 turn_range_mate.append(self.turn_range)
                     
 def build_map():
-    global border_list_left, border_list_right, previous_y, previous_x, camera_move, all_points_left, all_points_right, border_once, add_left
+    global border_list_left, border_list_right, previous_y, previous_x, camera_move, all_points_left, all_points_right, border_once, add_left, difficulty
     
     move_y = 0.1
     previous_y = previous_y + move_y
     up = previous_y + move_y
-    left = previous_x + random.randint(-20, 20)
+    if (difficulty >= 100):
+        left = previous_x + random.randint(-20, 20)
+    if (difficulty < 100):
+        difficulty = difficulty + 1
+        left = previous_x + random.randint(-5, 5)
     if (left + 150 >= 1000):
         left = 850
     if (left <= 0):
@@ -217,6 +222,7 @@ while True:
         cars_dict = {}
         cars_dict_babies = {}
         older = 1
+        difficulty = 0
         size_mate.append(random.randint(3, 25))
         speed_mate.append(random.randint(1, 60))
         turn_range_mate.append(random.randint(1, 300))
