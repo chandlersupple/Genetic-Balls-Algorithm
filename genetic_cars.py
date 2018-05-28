@@ -12,9 +12,9 @@ blue = (86, 66, 244)
 
 camera_plus = 0
 camera_move = 0
-border_list_left = [(0, 0 + camera_move), (350, 550 + camera_move)]
-border_list_right = [(1000, 0 + camera_move), (650, 550 + camera_move)]
-previous_y = 550
+border_list_left = [(0, 500 + camera_move), (350, 500 + camera_move)]
+border_list_right = [(1000, 500 + camera_move), (650, 500 + camera_move)]
+previous_y = 500
 previous_x = 400
 all_points_left = []
 all_points_right = []
@@ -141,10 +141,10 @@ class Car_Babies:
 def build_map():
     global border_list_left, border_list_right, previous_y, previous_x, camera_move, all_points_left, all_points_right, border_once, add_left
     
-    move_y = 1
+    move_y = 0.1
     previous_y = previous_y + move_y
     up = previous_y + move_y
-    left = previous_x + random.randint(-10, 10)
+    left = previous_x + random.randint(-20, 20)
     if (left + 150 >= 1000):
         left = 850
     if (left <= 0):
@@ -167,11 +167,15 @@ def build_map():
     border_list_right = []
     border_list_left = border_list_left_change
     border_list_right = border_list_right_change
+    if (border_list_left[0][1] <= -1):
+        border_list_left = border_list_left[1:(len(border_list_left))]
+    if (border_list_right[0][1] <= -1):
+        border_list_right = border_list_right[1:(len(border_list_right))]
     all_points_left = border_list_left
     all_points_right = border_list_right
 
-    pygame.draw.lines(master, white, False, border_list_left, 5)
-    pygame.draw.lines(master, white, False, border_list_right, 5)
+    pygame.draw.lines(master, white, False, border_list_left, 3)
+    pygame.draw.lines(master, white, False, border_list_right, 3)
     
 for car in range (0, population):
     cars_dict[('car%s') %(car)] = Car()
@@ -199,9 +203,9 @@ while True:
         print(scores)
         camera_plus = 0
         camera_move = 0
-        border_list_left = [(0, 0 + camera_move), (350, 550 + camera_move)]
-        border_list_right = [(1000, 0 + camera_move), (650, 550 + camera_move)]
-        previous_y = 550
+        border_list_left = [(0, 500 + camera_move), (350, 500 + camera_move)]
+        border_list_right = [(1000, 500 + camera_move), (650, 500 + camera_move)]
+        previous_y = 500
         previous_x = 400
         all_points_left = []
         all_points_right = []
@@ -223,4 +227,4 @@ while True:
         turn_range_mate = []
         
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(40)
