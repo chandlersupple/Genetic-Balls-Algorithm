@@ -3,7 +3,7 @@ import random
 from pygame.locals import *
 
 master = pygame.display.set_mode((1000, 500))
-pygame.display.set_caption('Genetic Cars :)')
+pygame.display.set_caption('Genetic Balls :)')
 clock = pygame.time.Clock()
 
 white = (255, 255, 255)
